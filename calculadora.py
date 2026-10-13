@@ -60,7 +60,13 @@ def evaluate_expression(expression: str) -> float:
     except (SyntaxError, TypeError, RecursionError) as exc:
         raise ExpressionError("Confira os números e operadores.") from exc
 
-    if isinstance(result, complex) or not math.isfinite(result):
+    if isinstance(result, complex):
+        raise ExpressionError("O resultado não é um número real finito.")
+    try:
+        finite = math.isfinite(result)
+    except OverflowError as exc:
+        raise ExpressionError("O resultado é grande demais para ser exibido.") from exc
+    if not finite:
         raise ExpressionError("O resultado não é um número real finito.")
     return result
 
